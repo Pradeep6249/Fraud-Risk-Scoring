@@ -102,6 +102,7 @@ def train_xgboost(X_train, y_train) -> xgb.XGBClassifier:
         eval_metric="aucpr",
         random_state=RANDOM_STATE,
         verbosity=0,
+        base_score=0.5,
     )
 
     # Cross-validation

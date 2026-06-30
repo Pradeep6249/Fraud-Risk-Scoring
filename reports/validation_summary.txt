@@ -1,0 +1,22 @@
+=======================================================
+  FRAUD MODEL VALIDATION REPORT
+=======================================================
+
+  AUC-ROC:                0.9453
+  Average Precision:      0.4871
+
+  KS Stability:           0.0330  (STABLE)
+  KS P-value:             0.6478
+
+  Disparate Impact Ratio: 0.0000  (BIAS RISK)
+
+  Optimal Threshold:      0.71
+  F1 at Optimal:          0.5049
+
+  Artifacts saved in /reports:
+    01_performance_curves.png
+    02_stability_ks_test.png
+    03_drift_psi.png
+    04_bias_fairness.png
+    05_threshold_optimization.png
+=======================================================

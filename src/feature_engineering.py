@@ -144,7 +144,7 @@ def add_interaction_features(df: pd.DataFrame) -> pd.DataFrame:
     """Multi-entity behavioral signals: merchant diversity, geography, device."""
     merchant_diversity = (
         df.groupby("user_id")["merchant_id"]
-        .transform(lambda x: x.expanding().nunique())
+        .transform(lambda x: x.expanding().apply(lambda s: pd.Series(s).nunique(), raw=False))
     )
     df["unique_merchants_7d"] = merchant_diversity
 

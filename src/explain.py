@@ -47,7 +47,7 @@ def load_artifacts():
 def compute_shap_values(model, X: pd.DataFrame):
     """Compute SHAP values using TreeExplainer (fast for XGBoost)."""
     print("Computing SHAP values (TreeExplainer)...")
-    explainer   = shap.TreeExplainer(model)
+    explainer   = shap.TreeExplainer(model.get_booster())
     shap_values = explainer.shap_values(X)
     return explainer, shap_values
 
