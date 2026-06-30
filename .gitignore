@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+.env/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data (keep README, ignore actual data files)
+data/*.csv
+data/*.parquet
+data/*.json
+data/*.pkl
+!data/README.md
+
+# Models (saved artifacts)
+models/*.pkl
+models/*.json
+models/*.ubj
+!models/README.md
+
+# Reports (auto-generated)
+reports/*.html
+reports/*.png
+reports/*.pdf
+!reports/README.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
