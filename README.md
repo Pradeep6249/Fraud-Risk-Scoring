@@ -62,7 +62,7 @@ fraud-risk-scoring/
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/YOUR_USERNAME/fraud-risk-scoring.git
+git clone https://github.com/Pradeep6249/fraud-risk-scoring.git
 cd fraud-risk-scoring
 ```
 
@@ -133,4 +133,5 @@ MIT License — see [LICENSE](LICENSE)
 ## 👤 Author
 
 **Pradeep Kumar Voruganti**
-[LinkedIn](https://linkedin.com/in/YOUR_PROFILE) | [Portfolio](https://YOUR_PORTFOLIO)
+[LinkedIn](
+www.linkedin.com/in/pradeep-kumar-voruganti) | [Portfolio](https://pkv-signal.vercel.app/)
