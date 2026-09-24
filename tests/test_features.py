@@ -29,9 +29,9 @@ def raw_data():
     return generate_synthetic_transactions(n=500, seed=0)
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Data generation tests
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def test_data_shape(raw_data):
     assert len(raw_data) == 500
@@ -51,9 +51,9 @@ def test_timestamps_ordered(raw_data):
     assert raw_data["timestamp"].is_monotonic_increasing
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Feature engineering tests
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def test_velocity_features_created(raw_data):
     df = add_velocity_features(raw_data)
@@ -107,9 +107,9 @@ def test_high_risk_country_binary(raw_data):
     assert set(df["high_risk_country"].unique()) <= {0, 1}
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Full pipeline tests
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def test_build_features_no_crash(raw_data):
     df = build_features(raw_data)

@@ -16,9 +16,9 @@ import pandas as pd
 from validate import psi, stability_test, threshold_optimization
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # PSI tests
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def test_psi_identical_distributions():
     """PSI of identical distributions should be ~0."""
@@ -45,9 +45,9 @@ def test_psi_non_negative():
     assert result >= 0
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Stability test
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 @pytest.fixture
 def mock_scored_df():
@@ -84,9 +84,9 @@ def test_stability_flag_type(mock_scored_df):
     assert isinstance(result["stable"], bool)
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Threshold optimization
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def test_threshold_optimization_returns_dict(mock_scored_df):
     result = threshold_optimization(mock_scored_df)
