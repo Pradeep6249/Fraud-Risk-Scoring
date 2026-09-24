@@ -24,18 +24,18 @@ warnings.filterwarnings("ignore")
 from feature_engineering import FEATURE_COLS
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Scoring
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def load_model(path: str = "models/xgboost_fraud_model.pkl"):
     return joblib.load(path)
 
 
 def risk_tier(score: float) -> str:
-    if score < 0.3:  return "🟢 LOW"
-    if score < 0.6:  return "🟡 MEDIUM"
-    return "🔴 HIGH"
+    if score < 0.3:  return "LOW"
+    if score < 0.6:  return "MEDIUM"
+    return "HIGH"
 
 
 def score_transaction(features: dict, model, threshold: float = 0.5) -> dict:
@@ -43,7 +43,7 @@ def score_transaction(features: dict, model, threshold: float = 0.5) -> dict:
     Score a single transaction dict.
 
     Args:
-        features:  dict of feature_name → value
+        features:  dict of feature_name -> value
         model:     trained XGBoost model
         threshold: decision boundary (default 0.5)
 
@@ -81,15 +81,15 @@ def print_result(result: dict, features: dict):
     print(f"  Decision:  {result['decision']}  (threshold={result['threshold']})")
     print("\n  Top 5 Risk Drivers:")
     for feat, sv in result["top_drivers"]:
-        direction = "↑ increases fraud risk" if sv > 0 else "↓ decreases fraud risk"
+        direction = "increases fraud risk" if sv > 0 else "decreases fraud risk"
         val = features.get(feat, "?")
-        print(f"    {feat:30s} = {val}  →  SHAP {sv:+.4f}  ({direction})")
+        print(f"    {feat:30s} = {val}  ->  SHAP {sv:+.4f}  ({direction})")
     print("=" * 50)
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Demo: score from test data
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def demo_score(index: int = None):
     """Load a row from the test set and score it."""
@@ -104,16 +104,16 @@ def demo_score(index: int = None):
     truth    = int(row.get("is_fraud", -1))
 
     print(f"\n  Transaction index: {index}")
-    print(f"  Ground truth:      {'🚨 FRAUD' if truth == 1 else '✅ LEGIT'}")
+    print(f"  Ground truth:      {'FRAUD' if truth == 1 else 'LEGIT'}")
 
     result = score_transaction(features, model)
     print_result(result, features)
     return result
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Main
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fraud risk scoring inference")

@@ -34,9 +34,9 @@ REPORTS_DIR = "reports"
 os.makedirs(REPORTS_DIR, exist_ok=True)
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Load artifacts
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def load_artifacts():
     """Load scored test data and trained model."""
@@ -45,9 +45,9 @@ def load_artifacts():
     return scored, model
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # 1. Performance Report
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def performance_report(df: pd.DataFrame) -> dict:
     """Compute and plot AUC-ROC and Precision-Recall curves."""
@@ -88,14 +88,14 @@ def performance_report(df: pd.DataFrame) -> dict:
     print(f"    AUC-ROC:           {auc:.4f}")
     print(f"    Average Precision: {ap:.4f}")
     print(f"\n{classification_report(y_true, y_pred, target_names=['Legit','Fraud'])}")
-    print(f"    → Saved: reports/01_performance_curves.png")
+    print(f"    Saved: reports/01_performance_curves.png")
 
     return {"auc": auc, "ap": ap}
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # 2. Stability Testing (KS Statistic)
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def stability_test(df: pd.DataFrame):
     """
@@ -108,14 +108,14 @@ def stability_test(df: pd.DataFrame):
     scores_late  = df.iloc[mid:]["xgb_score"]
 
     ks_stat, p_value = stats.ks_2samp(scores_early, scores_late)
-    stable = ks_stat < 0.2 and p_value > 0.05
+    stable = bool(ks_stat < 0.2 and p_value > 0.05)
 
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.hist(scores_early, bins=40, alpha=0.6, label="Window 1 (early)", color="#2563eb")
     ax.hist(scores_late,  bins=40, alpha=0.6, label="Window 2 (late)",  color="#dc2626")
     ax.set_xlabel("Fraud Risk Score")
     ax.set_ylabel("Count")
-    ax.set_title(f"Score Stability — KS={ks_stat:.4f}  p={p_value:.4f}  {'✅ STABLE' if stable else '⚠️ DRIFT'}")
+    ax.set_title(f"Score Stability - KS={ks_stat:.4f}  p={p_value:.4f}  {'STABLE' if stable else 'DRIFT'}")
     ax.legend()
     plt.tight_layout()
     plt.savefig(f"{REPORTS_DIR}/02_stability_ks_test.png", dpi=150)
@@ -124,15 +124,15 @@ def stability_test(df: pd.DataFrame):
     print(f"\n[2] Stability Test")
     print(f"    KS Statistic: {ks_stat:.4f}")
     print(f"    P-value:      {p_value:.4f}")
-    print(f"    Result:       {'✅ STABLE' if stable else '⚠️  POTENTIAL DRIFT DETECTED'}")
-    print(f"    → Saved: reports/02_stability_ks_test.png")
+    print(f"    Result:       {'STABLE' if stable else 'POTENTIAL DRIFT DETECTED'}")
+    print(f"    Saved: reports/02_stability_ks_test.png")
 
     return {"ks_stat": ks_stat, "p_value": p_value, "stable": stable}
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # 3. Drift Detection (PSI)
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def psi(expected: np.ndarray, actual: np.ndarray, bins: int = 10) -> float:
     """Population Stability Index. PSI < 0.1 = stable, 0.1-0.25 = monitor, >0.25 = unstable."""
@@ -170,9 +170,9 @@ def drift_detection(df: pd.DataFrame):
     psi_df = psi_df.dropna().sort_values("PSI", ascending=False)
 
     def psi_flag(v):
-        if v < 0.1:   return "✅ Stable"
-        if v < 0.25:  return "⚠️  Monitor"
-        return "🚨 Unstable"
+        if v < 0.1:   return "Stable"
+        if v < 0.25:  return "Monitor"
+        return "Unstable"
 
     psi_df["Status"] = psi_df["PSI"].apply(psi_flag)
 
@@ -191,14 +191,14 @@ def drift_detection(df: pd.DataFrame):
 
     print(f"\n[3] Drift Detection (PSI)")
     print(psi_df.to_string())
-    print(f"    → Saved: reports/03_drift_psi.png")
+    print(f"    Saved: reports/03_drift_psi.png")
 
     return psi_df
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # 4. Bias & Fairness Monitoring
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def bias_monitoring(df: pd.DataFrame):
     """
@@ -270,15 +270,15 @@ def bias_monitoring(df: pd.DataFrame):
     print(f"\n[4] Bias & Fairness Monitoring")
     print(group_stats[["label", "total", "flag_rate", "actual_rate"]].to_string(index=False))
     print(f"\n    Disparate Impact Ratio: {dir_ratio:.4f}")
-    print(f"    Result: {'✅ FAIR (DIR >= 0.8)' if dir_ratio >= 0.8 else '⚠️  POTENTIAL BIAS (DIR < 0.8)'}")
-    print(f"    → Saved: reports/04_bias_fairness.png")
+    print(f"    Result: {'FAIR (DIR >= 0.8)' if dir_ratio >= 0.8 else 'POTENTIAL BIAS (DIR < 0.8)'}")
+    print(f"    Saved: reports/04_bias_fairness.png")
 
     return {"dir_ratio": dir_ratio}
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # 5. Threshold Optimization
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def threshold_optimization(df: pd.DataFrame):
     """Plot precision, recall, and F1 across thresholds to find optimal cutoff."""
@@ -322,14 +322,14 @@ def threshold_optimization(df: pd.DataFrame):
     print(f"    F1 at optimal:     {f1s[best_idx]:.4f}")
     print(f"    Precision:         {precisions[best_idx]:.4f}")
     print(f"    Recall:            {recalls[best_idx]:.4f}")
-    print(f"    → Saved: reports/05_threshold_optimization.png")
+    print(f"    Saved: reports/05_threshold_optimization.png")
 
     return {"optimal_threshold": best_t, "best_f1": f1s[best_idx]}
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Summary Report
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def save_summary(perf, stability, bias, threshold):
     """Write a text summary of all validation results."""
@@ -363,12 +363,12 @@ def save_summary(perf, stability, bias, threshold):
     with open(f"{REPORTS_DIR}/validation_summary.txt", "w") as f:
         f.write(summary)
     print("\n" + summary)
-    print(f"\n✅ Summary saved to reports/validation_summary.txt")
+    print(f"\nSummary saved to reports/validation_summary.txt")
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Main
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def main():
     print("Loading scored test data...")

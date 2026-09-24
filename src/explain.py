@@ -26,9 +26,9 @@ REPORTS_DIR = "reports"
 os.makedirs(REPORTS_DIR, exist_ok=True)
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Load artifacts
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def load_artifacts():
     scored = pd.read_csv("data/test_scored.csv")
@@ -40,9 +40,9 @@ def load_artifacts():
     return model, X, y
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # SHAP values
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def compute_shap_values(model, X: pd.DataFrame):
     """Compute SHAP values using TreeExplainer (fast for XGBoost)."""
@@ -52,9 +52,9 @@ def compute_shap_values(model, X: pd.DataFrame):
     return explainer, shap_values
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # 1. Global Feature Importance (Bar)
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def plot_global_importance(shap_values, X: pd.DataFrame):
     """Bar chart of mean absolute SHAP values per feature."""
@@ -88,18 +88,18 @@ def plot_global_importance(shap_values, X: pd.DataFrame):
 
     print(f"\n[6] Global SHAP Feature Importance")
     print(importance_df_full.head(10).to_string(index=False))
-    print(f"    → Saved: reports/06_shap_global_importance.png")
-    print(f"    → Saved: reports/feature_importance.csv")
+    print(f"    Saved: reports/06_shap_global_importance.png")
+    print(f"    Saved: reports/feature_importance.csv")
 
     return importance_df_full
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # 2. SHAP Beeswarm (Summary Plot)
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def plot_beeswarm(shap_values, X: pd.DataFrame):
-    """SHAP summary beeswarm — shows direction and magnitude per feature."""
+    """SHAP summary beeswarm - shows direction and magnitude per feature."""
     # Use top 15 features by importance
     mean_abs = np.abs(shap_values).mean(axis=0)
     top_idx  = np.argsort(mean_abs)[-15:]
@@ -113,19 +113,19 @@ def plot_beeswarm(shap_values, X: pd.DataFrame):
         show=False,
         max_display=15,
     )
-    plt.title("SHAP Summary — Feature Impact on Fraud Predictions",
+    plt.title("SHAP Summary - Feature Impact on Fraud Predictions",
               fontsize=12, fontweight="bold", pad=15)
     plt.tight_layout()
     plt.savefig(f"{REPORTS_DIR}/07_shap_beeswarm.png", dpi=150, bbox_inches="tight")
     plt.close()
 
     print(f"\n[7] SHAP Beeswarm Summary Plot")
-    print(f"    → Saved: reports/07_shap_beeswarm.png")
+    print(f"    Saved: reports/07_shap_beeswarm.png")
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # 3. Local Explanation (single prediction)
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def plot_local_explanation(explainer, shap_values, X: pd.DataFrame, y: pd.Series,
                             idx: int = None):
@@ -171,7 +171,7 @@ def plot_local_explanation(explainer, shap_values, X: pd.DataFrame, y: pd.Series
     ax.axvline(0, color="black", linewidth=0.8)
     ax.set_xlabel("SHAP Value (impact on prediction)")
     ax.set_title(
-        f"Local Explanation — Transaction #{idx}\n"
+        f"Local Explanation - Transaction #{idx}\n"
         f"(Red = pushes toward fraud | Green = pushes toward legit)",
         fontsize=11, fontweight="bold"
     )
@@ -183,12 +183,12 @@ def plot_local_explanation(explainer, shap_values, X: pd.DataFrame, y: pd.Series
     for feat, sv, fv in zip(features_top, shap_top, fval_top):
         direction = "↑ fraud" if sv > 0 else "↓ fraud"
         print(f"    {feat:30s} = {fv:8.3f}  SHAP={sv:+.4f}  ({direction})")
-    print(f"    → Saved: reports/08_shap_local_explanation.png")
+    print(f"    Saved: reports/08_shap_local_explanation.png")
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Main
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def main():
     print("Loading model and scored data...")
@@ -201,7 +201,7 @@ def main():
     plot_beeswarm(shap_values, X)
     plot_local_explanation(explainer, shap_values, X, y)
 
-    print("\n✅ All SHAP reports saved to /reports")
+    print("\nAll SHAP reports saved to /reports")
     print("\nTop 5 fraud risk drivers:")
     print(importance_df.head(5)[["feature", "mean_abs_shap"]].to_string(index=False))
 

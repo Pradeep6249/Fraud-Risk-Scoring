@@ -2,8 +2,8 @@
 train.py
 --------
 Trains two models:
-  1. XGBoost Classifier  — primary production model
-  2. Logistic Regression — interpretable regulatory baseline
+  1. XGBoost Classifier  - primary production model
+  2. Logistic Regression - interpretable regulatory baseline
 
 Handles class imbalance, outputs trained models to /models,
 and prints a full evaluation report.
@@ -30,16 +30,16 @@ RANDOM_STATE = 42
 MODEL_DIR = "models"
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Data loading
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def load_data(path: str = "data/transactions_featured.csv") -> tuple:
     """Load feature-engineered data and return X, y splits."""
     if os.path.exists(path):
         df = pd.read_csv(path)
     else:
-        print("No data file found — generating synthetic data now...")
+        print("No data file found - generating synthetic data now...")
         raw = generate_synthetic_transactions(n=10_000)
         df = build_features(raw)
         os.makedirs("data", exist_ok=True)
@@ -51,9 +51,9 @@ def load_data(path: str = "data/transactions_featured.csv") -> tuple:
     return X, y
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Evaluation helper
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def evaluate(name: str, model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
     """Print and return evaluation metrics."""
@@ -83,9 +83,9 @@ def evaluate(name: str, model, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
     return {"name": name, "auc": auc, "ap": ap, "fpr": fpr}
 
 
-# ─────────────────────────────────────────────
-# Model 1 — XGBoost
-# ─────────────────────────────────────────────
+# ---------------------------------------------
+# Model 1 - XGBoost
+# ---------------------------------------------
 
 def train_xgboost(X_train, y_train) -> xgb.XGBClassifier:
     """Train XGBoost with class-imbalance weighting."""
@@ -114,9 +114,9 @@ def train_xgboost(X_train, y_train) -> xgb.XGBClassifier:
     return model
 
 
-# ─────────────────────────────────────────────
-# Model 2 — Logistic Regression
-# ─────────────────────────────────────────────
+# ---------------------------------------------
+# Model 2 - Logistic Regression
+# ---------------------------------------------
 
 def train_logistic_regression(X_train, y_train) -> Pipeline:
     """Train a scaled Logistic Regression pipeline."""
@@ -138,9 +138,9 @@ def train_logistic_regression(X_train, y_train) -> Pipeline:
     return model
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Main training pipeline
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def main():
     print("Loading data...")
@@ -176,8 +176,8 @@ def main():
     test_df["xgb_score"] = xgb_model.predict_proba(X_test)[:, 1]
     test_df.to_csv("data/test_scored.csv", index=False)
 
-    print("\n✅ Models saved to /models")
-    print("✅ Scored test set saved to data/test_scored.csv")
+    print("\nModels saved to /models")
+    print("Scored test set saved to data/test_scored.csv")
 
     # Summary
     print("\n" + "="*50)

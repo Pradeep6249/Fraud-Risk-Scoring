@@ -14,9 +14,9 @@ import pandas as pd
 import numpy as np
 import os
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Synthetic data generator (for demo / testing)
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def generate_synthetic_transactions(n: int = 10_000, seed: int = 42) -> pd.DataFrame:
     """
@@ -61,9 +61,9 @@ def generate_synthetic_transactions(n: int = 10_000, seed: int = 42) -> pd.DataF
     return df
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Velocity features
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def add_velocity_features(df: pd.DataFrame) -> pd.DataFrame:
     """Rolling transaction counts and amount sums per user over time windows."""
@@ -92,9 +92,9 @@ def add_velocity_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Amount pattern features
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def add_amount_features(df: pd.DataFrame) -> pd.DataFrame:
     """Flags and ratios based on transaction amounts."""
@@ -115,9 +115,9 @@ def add_amount_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Temporal features
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def add_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
     """Time-based behavioral signals."""
@@ -136,9 +136,9 @@ def add_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Interaction / behavioral features
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def add_interaction_features(df: pd.DataFrame) -> pd.DataFrame:
     """Multi-entity behavioral signals: merchant diversity, geography, device."""
@@ -169,9 +169,9 @@ def add_interaction_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 # Master pipeline
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 FEATURE_COLS = [
     # Velocity
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     os.makedirs("data", exist_ok=True)
     featured.to_csv("data/transactions_featured.csv", index=False)
 
-    print(f"✅ Done. Shape: {featured.shape}")
+    print(f"Done. Shape: {featured.shape}")
     print(f"   Fraud rate: {featured['is_fraud'].mean():.2%}")
     print(f"   Features available: {FEATURE_COLS}")
     print("   Saved to data/transactions_featured.csv")
