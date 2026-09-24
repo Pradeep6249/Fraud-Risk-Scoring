@@ -10,12 +10,12 @@ An end-to-end fraud detection pipeline on synthetic payment transactions: behavi
 
 ---
 
-## 📊 Results
+## Results
 
 | | Logistic Regression (baseline) | XGBoost |
 |---|---|---|
 | **False-positive rate** | 16.9% | **2.2%** |
-| **ROC AUC** (5-fold stratified CV) | — | **0.96** |
+| **ROC AUC** (5-fold stratified CV) | n/a | **0.96** |
 
 - **Data:** 10K synthetic payment transactions with a 3% fraud rate
 - **Features:** 25 engineered features covering spending velocity, amount anomalies, timing and behavior
@@ -25,7 +25,7 @@ An end-to-end fraud detection pipeline on synthetic payment transactions: behavi
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 Fraud-Risk-Scoring/
@@ -55,7 +55,7 @@ Fraud-Risk-Scoring/
 
 ---
 
-## 🔧 Tech Stack
+## Tech Stack
 
 - **Modeling:** XGBoost, Logistic Regression, scikit-learn
 - **Explainability:** SHAP
@@ -66,7 +66,7 @@ Fraud-Risk-Scoring/
 
 ---
 
-## 🚀 Quickstart
+## Quickstart
 
 ### 1. Clone the repo
 ```bash
@@ -95,7 +95,7 @@ pytest tests/
 
 ---
 
-## 🧠 Feature Engineering (25 Features)
+## Feature Engineering (25 Features)
 
 Features are grouped into four behavioral categories:
 
@@ -108,7 +108,7 @@ Features are grouped into four behavioral categories:
 
 ---
 
-## ✅ Model Validation Suite
+## Model Validation Suite
 
 The validation pipeline (`src/validate.py`) runs automatically and checks:
 
@@ -122,7 +122,7 @@ The framework is covered by unit tests in `tests/`. All outputs are saved to `re
 
 ---
 
-## 📈 Model Architecture
+## Model Architecture
 
 Two models are trained and compared:
 
@@ -133,13 +133,13 @@ Final scoring uses XGBoost with a tuned decision threshold and SHAP explanations
 
 ---
 
-## 📄 License
+## License
 
 MIT License. See [LICENSE](LICENSE).
 
 ---
 
-## 👤 Author
+## Author
 
 **Pradeep Kumar Voruganti**
 [LinkedIn](https://www.linkedin.com/in/pradeep-kumar-voruganti) | [Portfolio](https://pradeep6249.github.io)
