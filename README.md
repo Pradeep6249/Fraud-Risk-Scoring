@@ -4,44 +4,52 @@
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Active-brightgreen)]()
 
-An end-to-end machine learning platform for payment fraud detection, featuring behavioral feature engineering, ensemble modeling, automated model validation, drift detection, bias monitoring, and SHAP-based explainability reporting.
+An end-to-end fraud detection pipeline on synthetic payment transactions: behavioral feature engineering, XGBoost vs. a logistic regression baseline, decision-threshold tuning, and an automated validation suite covering stability, drift, fairness and SHAP explainability.
+
+*Nov 2024*
 
 ---
 
 ## 📊 Results
 
-| Metric | Baseline | This Framework |
-|--------|----------|----------------|
-| Fraud Detection Rate | ~71% | **+22% improvement** |
-| False Positive Rate | — | **−15% reduction** |
-| Manual Investigation Time | High | Reduced via automated scoring |
+| | Logistic Regression (baseline) | XGBoost |
+|---|---|---|
+| **False-positive rate** | 16.9% | **2.2%** |
+| **ROC AUC** (5-fold stratified CV) | — | **0.96** |
+
+- **Data:** 10K synthetic payment transactions with a 3% fraud rate
+- **Features:** 25 engineered features covering spending velocity, amount anomalies, timing and behavior
+- **Imbalance:** handled with class weighting (`scale_pos_weight`) and 5-fold stratified cross-validation
+- **Threshold:** decision threshold tuned to balance precision and recall
+- **Fairness:** the disparate impact check flagged a geography-driven bias risk before deployment
 
 ---
 
 ## 🗂️ Project Structure
 
 ```
-fraud-risk-scoring/
+Fraud-Risk-Scoring/
 ├── data/
-│   └── README.md                  # Data dictionary & source instructions
+│   └── README.md                  # Data dictionary & generation instructions
 ├── src/
 │   ├── __init__.py
-│   ├── feature_engineering.py     # 30+ behavioral & transactional features
-│   ├── train.py                   # Model training pipeline (XGBoost, LR)
-│   ├── validate.py                # Model validation: stability, drift, bias
-│   ├── predict.py                 # Real-time risk scoring inference
+│   ├── feature_engineering.py     # Synthetic data + 25 engineered features
+│   ├── train.py                   # Training pipeline (XGBoost, Logistic Regression)
+│   ├── validate.py                # Validation: stability, drift, fairness
+│   ├── predict.py                 # Risk scoring inference
 │   └── explain.py                 # SHAP explainability reports
 ├── models/
 │   └── README.md                  # Model versioning notes
-├── notebooks/
-│   └── fraud_risk_scoring_full.ipynb   # End-to-end walkthrough notebook
 ├── reports/
-│   └── README.md                  # Auto-generated validation reports land here
+│   ├── README.md                  # Auto-generated validation outputs land here
+│   ├── feature_importance.csv     # Mean |SHAP| per feature
+│   └── validation_summary.txt
 ├── tests/
 │   ├── test_features.py
 │   └── test_validate.py
 ├── requirements.txt
 ├── .gitignore
+├── LICENSE
 └── README.md
 ```
 
@@ -53,8 +61,8 @@ fraud-risk-scoring/
 - **Explainability:** SHAP
 - **Data:** pandas, numpy
 - **Visualization:** matplotlib, seaborn
-- **Validation:** scipy, evidently (drift detection)
-- **Notebook:** Jupyter
+- **Validation:** scipy (KS test), PSI, evidently (drift detection)
+- **Testing:** pytest
 
 ---
 
@@ -62,8 +70,8 @@ fraud-risk-scoring/
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/Pradeep6249/fraud-risk-scoring.git
-cd fraud-risk-scoring
+git clone https://github.com/Pradeep6249/Fraud-Risk-Scoring.git
+cd Fraud-Risk-Scoring
 ```
 
 ### 2. Install dependencies
@@ -73,29 +81,30 @@ pip install -r requirements.txt
 
 ### 3. Generate synthetic data & run the full pipeline
 ```bash
-python src/feature_engineering.py   # Build features
-python src/train.py                  # Train models
-python src/validate.py               # Run validation suite
+python src/feature_engineering.py   # Generate 10K transactions and build features
+python src/train.py                  # Train and compare models
+python src/validate.py               # Run the validation suite
 python src/explain.py                # Generate SHAP report
 ```
 
-### 4. Or run the full walkthrough notebook
+### 4. Run the tests
 ```bash
-jupyter notebook notebooks/fraud_risk_scoring_full.ipynb
+pip install pytest
+pytest tests/
 ```
 
 ---
 
-## 🧠 Feature Engineering (30+ Features)
+## 🧠 Feature Engineering (25 Features)
 
 Features are grouped into four behavioral categories:
 
 | Category | Examples |
 |----------|----------|
 | **Velocity** | `tx_count_1h`, `tx_count_24h`, `amt_sum_1h` |
-| **Amount Patterns** | `amt_zscore`, `amt_vs_avg_ratio`, `is_round_amount` |
-| **Temporal** | `hour_of_day`, `is_weekend`, `days_since_first_tx` |
-| **Interaction** | `unique_merchants_7d`, `device_change_flag`, `country_mismatch` |
+| **Amount anomalies** | `amt_zscore`, `amt_vs_avg_ratio`, `is_round_amount` |
+| **Timing** | `hour_of_day`, `is_weekend`, `is_night`, `days_since_first_tx` |
+| **Behavior** | `country_mismatch`, `device_change_flag`, `merchant_fraud_rate`, `unique_merchants_7d` |
 
 ---
 
@@ -103,13 +112,13 @@ Features are grouped into four behavioral categories:
 
 The validation pipeline (`src/validate.py`) runs automatically and checks:
 
-- **Stability Testing** — KS statistic on score distributions across time windows
-- **Drift Detection** — Population Stability Index (PSI) on feature distributions
-- **Bias & Fairness Monitoring** — Disparate impact analysis across demographic slices
-- **Performance Metrics** — AUC-ROC, Precision-Recall, F1, confusion matrix
-- **SHAP Explainability** — Global feature importance + local prediction explanations
+- **Stability testing:** KS test on score distributions
+- **Feature drift detection:** Population Stability Index (PSI)
+- **Fairness checks:** disparate impact analysis, which flagged a geography-driven bias risk before deployment
+- **Performance metrics:** AUC-ROC, precision-recall, F1, threshold optimization
+- **SHAP explainability:** global feature importance plus an explanation for every prediction
 
-All outputs are saved to `reports/`.
+The framework is covered by unit tests in `tests/`. All outputs are saved to `reports/`.
 
 ---
 
@@ -117,21 +126,20 @@ All outputs are saved to `reports/`.
 
 Two models are trained and compared:
 
-1. **XGBoost Classifier** — primary production model; handles imbalanced data via `scale_pos_weight`
-2. **Logistic Regression** — interpretable baseline; used for regulatory explainability requirements
+1. **XGBoost Classifier:** primary model; handles class imbalance via `scale_pos_weight`
+2. **Logistic Regression:** interpretable baseline for comparison
 
-Final scoring uses XGBoost with SHAP explanations attached per prediction.
+Final scoring uses XGBoost with a tuned decision threshold and SHAP explanations attached to each prediction.
 
 ---
 
 ## 📄 License
 
-MIT License — see [LICENSE](LICENSE)
+MIT License. See [LICENSE](LICENSE).
 
 ---
 
 ## 👤 Author
 
 **Pradeep Kumar Voruganti**
-[LinkedIn](
-www.linkedin.com/in/pradeep-kumar-voruganti) | [Portfolio](https://pkv-signal.vercel.app/)
+[LinkedIn](https://www.linkedin.com/in/pradeep-kumar-voruganti) | [Portfolio](https://pradeep6249.github.io)
