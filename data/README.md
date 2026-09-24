@@ -34,26 +34,26 @@ python src/train.py                  # creates test_scored.csv
 ### Engineered features (30+)
 
 **Velocity**
-- `tx_count_1h`, `tx_count_6h`, `tx_count_24h`, `tx_count_7d` — rolling transaction counts
-- `amt_sum_1h`, `amt_sum_6h`, `amt_sum_24h` — rolling amount sums
-- `amt_avg_7d` — 7-day rolling average spend
+- `tx_count_1h`, `tx_count_6h`, `tx_count_24h`, `tx_count_7d`: rolling transaction counts
+- `amt_sum_1h`, `amt_sum_6h`, `amt_sum_24h`: rolling amount sums
+- `amt_avg_7d`: 7-day rolling average spend
 
 **Amount Patterns**
-- `amt_zscore` — z-score of amount vs user historical mean
-- `amt_vs_avg_ratio` — amount / user average
-- `log_amount` — log-transformed amount
-- `is_round_amount` — flag for round-number amounts (fraud signal)
-- `is_high_value` — flag for top 5th percentile amounts
+- `amt_zscore`: z-score of amount vs user historical mean
+- `amt_vs_avg_ratio`: amount / user average
+- `log_amount`: log-transformed amount
+- `is_round_amount`: flag for round-number amounts (fraud signal)
+- `is_high_value`: flag for top 5th percentile amounts
 
 **Temporal**
-- `hour_of_day`, `day_of_week` — time features
-- `is_weekend`, `is_night`, `is_business_hours` — binary time flags
-- `days_since_first_tx` — customer tenure in days
-- `is_new_user` — flag for customers < 7 days old
+- `hour_of_day`, `day_of_week`: time features
+- `is_weekend`, `is_night`, `is_business_hours`: binary time flags
+- `days_since_first_tx`: customer tenure in days
+- `is_new_user`: flag for customers < 7 days old
 
 **Interaction / Behavioral**
-- `unique_merchants_7d` — merchant diversity score
-- `country_mismatch` — transaction country differs from user's typical country
-- `high_risk_country` — transaction from high-risk geography
-- `device_change_flag` — device differs from user's typical device
-- `merchant_fraud_rate` — historical fraud rate for this merchant
+- `unique_merchants_7d`: merchant diversity score
+- `country_mismatch`: transaction country differs from user's typical country
+- `high_risk_country`: transaction from high-risk geography
+- `device_change_flag`: device differs from user's typical device
+- `merchant_fraud_rate`: historical fraud rate for this merchant
